@@ -1,8 +1,9 @@
 # ASCII Iraq Flag
 
-This simple script displays an animated ASCII art version of the Iraq flag in a terminal-style web page, with a subtle Matrix-style Arabic background.
-**Purpose:**  
-Created to celebrate Iraq's Independence Day.
-![Video Preview](preview.gif)
+A retro terminal-style web page that displays an **animated ASCII Iraq flag** with a subtle Matrix-like Arabic background.  
+Created in tribute to **Iraq's Independence Day**.
 
+![Preview](preview.gif)
+
+## Usage
 Open `iraq-ascii.html` in your browser to view the animation.
