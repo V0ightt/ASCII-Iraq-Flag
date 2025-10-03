@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ASCII Iraq Flag</title>
+  <style>
+    body {
+      background: #101c10;
+      color: #c2ffb4;
+      font-family: 'Fira Mono', 'Consolas', 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .matrix-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .flag-terminal {
+      position: relative;
+      background: #181818;
+      border: 2px solid #3f3f3f;
+      box-shadow: 0 0 24px #000a;
+      width: fit-content;
+      min-width: 600px;
+      padding: 0;
+      z-index: 1;
+    }
+    .terminal-header {
+      background: #222c22;
+      color: #6f6;
+      font-size: 0.9rem;
+      padding: 6px 16px;
+      border-bottom: 1px solid #3f3f3f;
+      letter-spacing: 2px;
+      font-family: inherit;
+      user-select: none;
+    }
+    pre {
+      font-size: 1.15rem;
+      line-height: 1.1;
+      margin: 0;
+      padding: 24px 32px 24px 32px;
+      background: none;
+      color: #c2ffb4;
+      text-shadow: none;
+      letter-spacing: 1px;
+      font-family: inherit;
+    }
+    .allah-akbar {
+      color: #23d304;
+      font-weight: bold;
+      text-shadow: 0 0 2px #39ff14;
+    }
+    .red { color: #ff3b3b; text-shadow: 0px 0px 5px #ff3b3b;}
+    .white { color: #eaeaea; text-shadow: 0px 0px 5px #d9d9d9;}
+    .black { color: #222; text-shadow:  0px 0px 5px #000000;}
+  </style>
+</head>
+<body>
+  <canvas class="matrix-bg"></canvas>
+  <div class="flag-terminal">
+    <div class="terminal-header">iraq@ascii:~$ cat flag.txt</div>
+    <pre id="flag"></pre>
+  </div>
+  <script>
+    // --- Matrix Falling Characters Background ---
+    const canvas = document.querySelector('.matrix-bg');
+    const ctx = canvas.getContext('2d');
+    let w = window.innerWidth, h = window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    const fontSize = 20;
+    const columns = Math.floor(w / fontSize);
+    // Only a few falling columns for subtle effect
+    const activeCols = [];
+    for (let i = 0; i < columns; i++) {
+      if (Math.random() < 0.07) activeCols.push(i);
+    }
+    const drops = Array(activeCols.length).fill(0);
+
+    // Arabic alphabet characters
+    const arabicChars = [
+      'ا','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ',
+      'ف','ق','ك','ل','م','ن','ه','و','ي'
+    ];
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(16,28,16,0.7)';
+      ctx.fillRect(0, 0, w, h);
+      ctx.font = fontSize + "px 'Fira Mono', monospace";
+      for (let i = 0; i < activeCols.length; i++) {
+      const col = activeCols[i];
+      const char = arabicChars[Math.floor(Math.random() * arabicChars.length)];
+      ctx.fillStyle = '#39ff14';
+      ctx.fillText(char, col * fontSize, drops[i] * fontSize);
+      if (Math.random() > 0.95) drops[i] = 0;
+      else drops[i]++;
+      if (drops[i] * fontSize > h) drops[i] = 0;
+      }
+    }
+    setInterval(drawMatrix, 80);
+    window.addEventListener('resize', () => {
+      w = window.innerWidth; h = window.innerHeight;
+      canvas.width = w; canvas.height = h;
+    });
+
+    // --- ASCII Flag ---
+    const rows = 15;
+    const cols = 50;
+    const allahAkbar = "الله اكبر";
+    const allahAkbarRow = Math.floor(rows / 2);
+    const allahAkbarCol = Math.floor((cols - allahAkbar.length) / 2);
+
+    // Terminal color sets
+    const redSet = ['#', '@', '%', '&', '/'];
+    const whiteSet = ['.', '+', '-', '=', ':'];
+    const blackSet = [' ', '*', '^', '#', '~'];
+
+    function getRandomChar(set) {
+      return set[Math.floor(Math.random() * set.length)];
+    }
+
+    function generateFlag() {
+      let flag = '';
+      for (let r = 0; r < rows; r++) {
+        let line = '';
+        for (let c = 0; c < cols; c++) {
+          // Top third: red
+          if (r < rows / 3) {
+            line += `<span class="red">${getRandomChar(redSet)}</span>`;
+          }
+          // Middle third: white, with "الله اكبر"
+          else if (r < 2 * rows / 3) {
+            if (r === allahAkbarRow && c >= allahAkbarCol && c < allahAkbarCol + allahAkbar.length) {
+              line += `<span class="allah-akbar">${allahAkbar[c - allahAkbarCol]}</span>`;
+            } else {
+              line += `<span class="white">${getRandomChar(whiteSet)}</span>`;
+            }
+          }
+          // Bottom third: black
+          else {
+            line += `<span class="black">${getRandomChar(blackSet)}</span>`;
+          }
+        }
+        flag += line + '\n';
+      }
+      return flag;
+    }
+
+    function animateFlag() {
+      document.getElementById('flag').innerHTML = generateFlag();
+    }
+
+    setInterval(animateFlag, 120);
+    animateFlag();
+  </script>
+  <div style="position: fixed; bottom: 8px; font-size: 0.8rem; color: #555;">
+    Made with ❤️ by <a href="https://github.com/V0ightt" target="_blank" style="color: #39ff14; text-decoration: none;">v0ight</a>
+</body>
+</html>
+ 
